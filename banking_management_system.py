@@ -126,29 +126,98 @@ class Admin:
         self.__bank.toggle_loan(status)
 
     
-bank= Bank()
-admin= Admin(bank)
+def main():
+    bank= Bank()
+    admin= Admin(bank)
 
-admin.create_user_account("Rahim", "rahim@gmail.com", "Rahimganj", "Savings")
-admin.create_user_account("Karim", "karim@gmail.com", "karimganj", "Current")
+    while True:
+        print("\nWelcome to the banking system")
+        print("1.Create Account")
+        print("2.Delete Account")
+        print("3.Deposit")
+        print("4.Withdraw")
+        print("5.Transfer")
+        print("6.Take loan")
+        print("7.View all users")
+        print("8.Check total bank balance")
+        print("9.Check total loan amount")
+        print("10.Toggle loan status")
+        print("11.View Transaction history")
+        print("12.Exit")
+        
+        choice = input("Please select an option (1-12): ")
 
-user1 = bank._get_users()[1]
-user2 = bank._get_users()[2]
+        if choice == '1':
+            name = input("Enter name: ")
+            email = input("Enter email: ")
+            address = input("Enter address: ")
+            account_type = input("Enter account type (Savings/Current): ")
+            admin.create_user_account(name, email, address, account_type)
 
-user1.deposit(1000)
-user1.withdraw(300)
-user1.transfer(bank, 2, 200)
+        elif choice == '2':
+            account_number = int(input("Enter account number to delete: "))
+            admin.delete_user_account(account_number)
 
-user2.deposit(500)
-user2.take_loan(bank, 1000)
+        elif choice == '3':
+            account_number = int(input("Enter account number to deposit into: "))
+            amount = float(input("Enter amount to deposit: "))
+            if account_number in bank._get_users():
+                bank._get_users()[account_number].deposit(amount)
+            else:
+                print(f"Account {account_number} does not exist.")
 
-admin.show_users()
-admin.check_total_balance()
-admin.check_total_loan()
-admin.set_loan_status(False)
+        elif choice == '4':
+            account_number = int(input("Enter account number to withdraw from: "))
+            amount = float(input("Enter amount to withdraw: "))
+            if account_number in bank._get_users():
+                bank._get_users()[account_number].withdraw(amount)
+            else:
+                print(f"Account {account_number} does not exist.")
+        elif choice == '5':
+            from_account = int(input("Enter your account number: "))
+            to_account = int(input("Enter account number to transfer to: "))
+            amount = float(input("Enter amount to transfer: "))
+            if from_account in bank._get_users():
+                bank._get_users()[from_account].transfer(bank, to_account, amount)
+            else:
+                print(f"Account {from_account} does not exist.")
 
-user1.view_transaction_history()
-user2.view_transaction_history()
+        elif choice == '6':
+            account_number = int(input("Enter account number to take loan: "))
+            amount = float(input("Enter loan amount: "))
+            if account_number in bank._get_users():
+                bank._get_users()[account_number].take_loan(bank, amount)
+            else:
+                print(f"Account {account_number} does not exist.")
+
+        elif choice == '7':
+            admin.show_users()
+
+        elif choice == '8':
+            admin.check_total_balance()
+
+        elif choice == '9':
+            admin.check_total_loan()
+
+        elif choice == '10':
+            status = input("Enter loan status (On/Off): ").strip().lower() == 'on'
+            admin.set_loan_status(status)
+
+        elif choice == '11':
+            account_number = int(input("Enter account number to view history: "))
+            if account_number in bank._get_users():
+                bank._get_users()[account_number].view_transaction_history()
+            else:
+                print(f"Account {account_number} does not exist.")
+
+        elif choice == '12':
+            print("Exiting the system.")
+            break
+
+        else:
+            print("Invalid choice, please select a valid option.")
+
+main()
 
     
 
